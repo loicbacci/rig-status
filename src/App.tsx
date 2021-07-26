@@ -42,7 +42,13 @@ const App = () => {
   useEffect(updateData, [apiKey]);
 
   useEffect(() => {
-    setApiKey(prompt('Enter the minerstat API key', '') as string);
+    const key = process.env.REACT_APP_MINERSTAT_KEY
+    if (key === undefined) {
+      setApiKey(prompt('Enter the minerstat API key', '') as string);
+    } else {
+      setApiKey(key);
+    }
+    
   }, []);
 
   if (initialized === false) {
@@ -67,7 +73,7 @@ const App = () => {
         <div className='font-semibold text-4xl'>{rig.name}</div>
         <div className='font-normal text-xl'>{rig.status} - {rig.hashrate.toFixed(2)} MH/s</div>
       </div>
-      
+
       <div className='font-semibold'>Last refresh</div>
       <div>{refreshDate.toTimeString()}</div>
     </div>

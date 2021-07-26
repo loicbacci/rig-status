@@ -36,7 +36,7 @@ const App = () => {
   }
 
   const queueRefresh = () => {
-    timer = setTimeout(updateData, 5000)
+    timer = setTimeout(updateData, 60000)
   }
 
   useEffect(updateData, [apiKey]);
@@ -59,13 +59,11 @@ const App = () => {
     );
   }
 
-  document.body.className = status;
-
   const statusColor = rig.status === 'offline' ? 'red' : 'green'
-  const statusClass = `bg-${statusColor}-300`
+  const statusClass = 'bg-' + statusColor + '-300'//`bg-${statusColor}-300`
   // const borderClass = `border-${statusColor}-400`
 
-  const backClasses = `flex flex-col h-screen text-center ${statusClass} p-6`
+  const backClasses = 'flex flex-col h-screen text-center p-6 ' + statusClass//`flex flex-col h-screen text-center ${statusClass} p-6`
 
   return (
     <div className={backClasses}>

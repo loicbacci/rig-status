@@ -53,7 +53,7 @@ const App = () => {
 
   if (initialized === false) {
     return (
-      <div className={`flex h-screen text-center bg-yellow-300 p-6`}>
+      <div className={'flex h-screen text-center bg-yellow-300 p-6'}>
         <div className='m-auto text-4xl'>Loading...</div>
       </div>
     );

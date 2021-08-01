@@ -99,7 +99,7 @@ const App = () => {
         setErrorFound(false)
         queueRefresh()
       })
-      .catch(e => setErrorFound(true))
+      .catch(() => setErrorFound(true))
   }
 
   const queueRefresh = () => {

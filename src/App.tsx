@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { IMinerStat } from './types';
 
@@ -18,7 +18,7 @@ const App = () => {
   let timer: NodeJS.Timeout
 
   const updateData = () => {
-    //clearTimeout(timer)
+    clearTimeout(timer)
     console.log('updating')
 
     const workers_url = `https://api.minerstat.com/v2/stats/${apiKey}`
@@ -33,8 +33,9 @@ const App = () => {
         setInitialized(true)
         setRefreshDate(new Date())
         setErrorFound(false)
-        //queueRefresh()
+        queueRefresh()
       })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch(err => setErrorFound(true))
   }
 

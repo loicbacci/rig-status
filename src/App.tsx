@@ -9,58 +9,67 @@ interface IRig {
 }
 
 const App = () => {
-  const [rig, setRig] = useState<IRig>({} as IRig);
-  const [initialized, setInitialized] = useState(false);
-  const [apiKey, setApiKey] = useState('');
+  const [rig, setRig] = useState<IRig>({} as IRig)
+  const [initialized, setInitialized] = useState(false)
+  const [apiKey, setApiKey] = useState('')
   const [refreshDate, setRefreshDate] = useState(new Date())
+  const [errorFound, setErrorFound] = useState(false)
 
   let timer: NodeJS.Timeout
 
   const updateData = () => {
-    clearTimeout(timer)
-    if (apiKey === '') return;
-    
-    const workers_url = `https://api.minerstat.com/v2/stats/${apiKey}`;
+    //clearTimeout(timer)
+    console.log('updating')
+
+    const workers_url = `https://api.minerstat.com/v2/stats/${apiKey}`
     axios
       .get<IMinerStat>(workers_url)
       .then(resp => {
-        const entry = Object.entries(resp.data)[0];
-        const name = entry[0];
-        const status = entry[1].info.status;
-        const hashrate = entry[1].mining.hashrate.hashrate;
-        setRig({name, status, hashrate})
-        setInitialized(true);
+        const entry = Object.entries(resp.data)[0]
+        const name = entry[0]
+        const status = entry[1].info.status
+        const hashrate = entry[1].mining.hashrate.hashrate
+        setRig({ name, status, hashrate })
+        setInitialized(true)
         setRefreshDate(new Date())
-        queueRefresh()
-      });
+        setErrorFound(false)
+        //queueRefresh()
+      })
+      .catch(err => setErrorFound(true))
   }
 
   const queueRefresh = () => {
     timer = setTimeout(updateData, 60000)
   }
 
-  useEffect(updateData, [apiKey]);
+  if (!initialized) {
+    const color = errorFound ? 'bg-red-300' : 'bg-yellow-300'
 
-  useEffect(() => {
-    const key = process.env.REACT_APP_MINERSTAT_KEY
-    if (key === undefined) {
-      setApiKey(prompt('Enter the minerstat API key', '') as string);
-    } else {
-      setApiKey(key);
-    }
-    
-  }, []);
-
-  if (initialized === false) {
     return (
-      <div className={'flex h-screen text-center bg-yellow-300 p-6'}>
-        <div className='m-auto text-4xl'>Loading...</div>
+      <div className={`flex flex-col h-screen text-center ${color}`}>
+        <form className="m-auto" onSubmit={e => { e.preventDefault(); updateData() }}>
+          <label className="block text-3xl font-semibold mb-4" htmlFor="password">
+            {!errorFound ? '' : <div className="mb-4 text-4xl font-bold">Wrong key entered!</div>}
+            Enter API key
+          </label>
+
+          <div className="flex flex-row">
+            <input
+              className="shadow appearance-none border border-yellow-600 rounded w-full py-2 px-3 mr-4 leading-tight focus:outline-none focus:shadow-outline"
+              id="password"
+              type="password"
+              placeholder="******************"
+              value={apiKey}
+              onChange={e => setApiKey(e.target.value)}
+            />
+            <button type="submit" className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Done</button>
+          </div>
+        </form>
       </div>
-    );
+    )
   }
 
-  const statusClass =  rig.status === 'offline' ? 'bg-red-300' : 'bg-green-300'
-  // const borderClass = `border-${statusColor}-400`
+  const statusClass = rig.status === 'offline' ? 'bg-red-300' : 'bg-green-300'
 
   const backClasses = `flex flex-col h-screen text-center ${statusClass} p-6`
 
@@ -74,23 +83,7 @@ const App = () => {
       <div className='font-semibold'>Last refresh</div>
       <div>{refreshDate.toTimeString()}</div>
     </div>
-  );
-  /*
-  return (
-    <div className={backClasses}>
-      <div className='m-auto'>
-        <div className={`rounded-2xl border-4 shadow-lg p-6 ${borderClass}`}>
-          <div className='font-semibold text-4xl'>{rig.name}</div>
-          <div className='font-normal'>{rig.status}</div>
-        </div>
-        
-        <div className='p-4'></div>
-        <div>text</div>
-      </div>
-      
-    </div>
-  );
-  */
+  )
 }
 
-export default App;
+export default App

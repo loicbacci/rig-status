@@ -1,5 +1,5 @@
 // MINERSTAT
-export interface IMinerStat {
+interface IMinerStat {
   [worker_name: string]: {
     info: IInfo;
     hardware: IHardwareEntry[];
@@ -10,35 +10,35 @@ export interface IMinerStat {
 
 interface IInfo {
   type: string;
-      system: string;
-      status: string;
-      inactive: number;
-      status_reason: string;
-      status_cpu: string;
-      uptime: string;
-      sync: number;
-      time: string;
-      note: number;
-      profit_switch: number;
-      name: string;
-      version: string;
-      groups: string;
-      cmd: string;
-      electricity: number;
-      hot: number;
-      veryHot: number;
-      devices: number;
-      consumption: number;
-      os: {
-        status: string;
-        sync: number;
-        uptime: string;
-        cpu_temp: number;
-        cpu_load: number;
-        freespace: number;
-        freemem: number;
-        localip: string
-      }
+  system: string;
+  status: string;
+  inactive: number;
+  status_reason: string;
+  status_cpu: string;
+  uptime: string;
+  sync: number;
+  time: string;
+  note: number;
+  profit_switch: number;
+  name: string;
+  version: string;
+  groups: string;
+  cmd: string;
+  electricity: number;
+  hot: number;
+  veryHot: number;
+  devices: number;
+  consumption: number;
+  os: {
+    status: string;
+    sync: number;
+    uptime: string;
+    cpu_temp: number;
+    cpu_load: number;
+    freespace: number;
+    freemem: number;
+    localip: string
+  }
 }
 
 interface IHardwareEntry {
@@ -106,4 +106,31 @@ interface IMining {
     accepted_share_cpu: number;
     rejected_share_cpu: number;
   }
+}
+
+
+interface IRig {
+  name: string
+  status: string
+  hashrate: number
+}
+
+// redux
+
+type State = {
+  rig: IRig | null
+  error: boolean
+  refreshDate: Date | null
+  accessKey: string | null
+}
+
+type Data = {
+  accessKey?: string
+  rig?: IRig
+  dispatcher?: Dispatch<Action>
+}
+
+type Action = {
+  type: string
+  data?: Data
 }
